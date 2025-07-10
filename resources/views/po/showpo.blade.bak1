@@ -1,0 +1,125 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a href="{{ url('/') }}/po/partialinv"><- Back to Open POs</a></div>
+
+                <div class="panel-body">
+		<a href="{{ url('/') }}/orders/{{$poinfo[0]->OrderID}}">Sales Order</a>
+			@php
+				$lastpo = 0;
+				$count = 0;
+				$index =0;
+			@endphp
+
+                        @foreach ( $podetails as $podet)
+				@php
+					if ($podet->PONum != $lastpo) {
+                                                echo('</table><br>
+<table class="table"><tr><th>Vendor</th><th>E-mail</th><th>PO Num</th><th>Created Date</th><th>Created By</th></tr><tr>
+<td>'.$poinfo[$count]->Vendor.'</td><td>'.$vendorinfo[0]->Email.'</td><td>'.$podet->PONum.'</td><td>'.$poinfo[0]->CreatedDate.'</td><td>'.$poinfo[0]->createdby.'</td>
+</tr></table>');
+						echo('
+<form method="POST" action="/po/shipped/'.$podet->PONum.'">
+<input type="hidden" name="_token" value="');echo e(csrf_token());echo('">
+<input type="hidden" name="ponum" value="'.$podet->PONum.'">
+
+<table class="table table-condensed">
+<tr><th>Info</th><th>Billing</th><th>Shipping</th></tr>
+<tr><td><strong>Company Name</strong></td><td> FactoryExpress </td><td>'. $poinfo[$count] ->ShippingCompanyName.'</td></tr>
+<tr><td><strong>First Name</strong></td><td> Accounts </td><td>'. $poinfo[$count] ->ShippingFirstName.'</td></tr>
+<tr><td><strong>Last Name</strong></td><td> Payable </td><td>'. $poinfo[$count] ->ShippingLastName.'</td></tr>
+<tr><td><strong>Address1</strong></td><td> 8201 E Pacific Pl, Ste 603-604 </td><td>'. $poinfo[$count] ->ShippingAddress1.'</td></tr>
+<tr><td><strong>Address2</strong></td><td></td><td>'. $poinfo[$count] ->ShippingAddress2.'</td></tr>
+<tr><td><strong>City</strong></td><td> Denver </td><td>'. $poinfo[$count] ->ShippingCity.'</td></tr>
+<tr><td><strong>State</strong></td><td> Colorado </td><td>'. $poinfo[$count] ->ShippingState.'</td></tr>
+<tr><td><strong>PostalCode</strong></td><td> 80231 </td><td>'. $poinfo[$count] ->ShippingPostalCode.'</td></tr>
+<tr><td><strong>Country</strong></td><td> USA </td><td>'. $poinfo[$count] ->ShippingCountry.'</td></tr>
+<tr><td><b>Phone Number</b></td><td> 505-247-3232 </td><td>'. $poinfo[$count] ->ShippingPhoneNumber.'</td></tr>
+</table>
+<table class="table table-condensed">
+<tr><td width="175"><strong>Shipping Method:</strong></td><td><strong>'.$poinfo[$count]-> ShippingMethod.'</strong></td><td><b>Cart #:'.$poinfo[0]->OrderID.'</b></td></tr>
+</table>
+<table class="table table-condensed">
+');
+$lastdate='';
+@endphp
+
+
+@foreach ( $poshipped as $shipped)
+
+@php
+if($lastdate == $shipped->ShippedDate) {
+	echo('<tr><td></td><td>'.$shipped->ProductCode.'</td><td>'.$shipped->ProductName.'</td><td>'.$shipped->Quantity.'</td><td><input type="date" name="'.$shipped->invoicenum.$shipped->ProductCode.'shippeddate" value="'.$shipped->ShippedDate.'"></td>');
+	echo('<td><button type="submit" class="btn btn-success btn-xs" name="update" value="'.$shipped->ProductCode.'"><span class="glyphicon glyphicon-ok"></span></button></td></tr>');
+
+}
+else {
+
+
+	echo('<tr><th>Invoice #'.$shipped->invoicenum.'</th><th>Product Code</th><th>Product Description</th><th>Shipped</th><th>Shipped Date</th><th>');
+
+	echo('<input type="hidden" name="invoicenum" value="'.$shipped->invoicenum.'">');
+
+	echo('<button type="submit" name="quickbooks" value="'.$shipped->invoicenum.'" class="btn btn-primary btn-xs">QB</button> ');
+
+	if($shipped->sent == 1) {
+		echo('<button type="submit" name="button" value="'.$shipped->invoicenum.'" class="btn btn-danger btn-xs">Resend</button> ');
+	}
+	else {
+		echo('<button type="submit" name="button" value="'.$shipped->invoicenum.'" class="btn btn-primary btn-xs">Send</button> ');
+	}
+		echo('</th></tr>');
+	echo('<tr><td></td><td>'.$shipped->ProductCode.'</td><td>'.$shipped->ProductName.'</td><td>'.$shipped->Quantity.'</td><td><input type="date" name="'.$shipped->invoicenum.$shipped->ProductCode.'shippeddate" value="'.$shipped->ShippedDate.'"></td>');
+	echo('<td><button type="submit" class="btn btn-success btn-xs" name="update" value="'.$shipped->ProductCode.'"><span class="glyphicon glyphicon-ok"></span></button></td></tr>');
+}
+
+$lastdate = $shipped->ShippedDate;
+@endphp
+@endforeach
+
+</table>
+
+<table class="table table-condensed">
+
+@php
+
+echo('<tr><th>Product Code</th><th>Description</th><th>Quantity</th><th>Price</th><th>Options</th><th>Shipped</th><th>Shipped Date</th></tr>');
+}
+$index = $index + 1;
+if($poinfo[0]->Vendor == 'Inventory') {
+echo('<tr><td>'.$podet ->ProductCode.'</td><td>'.$podet ->ProductName.'</td><td>'.$podet ->Quantity.'</td><td>'.$podet ->Cost.'</td><td>'.$podet ->Options.'</td>
+<td><input type="text" maxlength="4" size="4" value="'.$podet->Shipped.'" name="'.$index.'shipped"></td><td><input type="date" name="'.$index.'shippeddate"></td>');
+}
+else {
+echo('<tr><td>'.$podet ->ProductCode.'</td><td>'.$podet ->ProductName.'</td><td>'.$podet ->Quantity.'</td><td>'.$podet ->Cost.'</td><td>'.$podet ->Options.'</td>
+<td><input type="text" maxlength="4" size="4" value="'.$podet->Shipped.'" name="'.$index.'shipped"></td><td><input type="date" name="'.$index.'shippeddate"></td>');
+}
+
+					$count = $count +1;
+
+					
+
+			$lastpo = $podet->PONum;
+
+			@endphp
+			@endforeach
+@php
+if($poinfo[0]->Vendor == 'Inventory') {
+echo('</tr><tr><Td></td><Td></td><Td></td><Td></td><td></td><td align="right"><button type="submit" name="button" value="inventory" class="btn btn-primary btn-xs">Save</button></td></tr></table> ');
+}
+else{
+echo('</tr><tr><Td></td><Td></td><Td></td><Td></td><td></td><td align="right"><button type="submit" name="button" value="dropshipped" class="btn btn-primary btn-xs">Save</button></td></tr></table> ');
+}
+@endphp
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+

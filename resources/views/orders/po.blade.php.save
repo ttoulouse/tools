@@ -1,0 +1,62 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-default">
+                <div class="panel-heading"><a href="{{ url('/') }}/orders"><- Back to All Orders</a></div>
+
+                <div class="panel-body">
+			@php
+				$lastpo = 0;
+				$count = 0;
+			@endphp
+
+                        @foreach ( $podetails as $podet)
+				@php
+					if ($podet->PONum != $lastpo) {
+						echo('</table><br><b>Vendor:</b> '.$poinfo[$count]->Vendor.' <b>PO Num:</b> '.$podet->PONum);
+						echo('
+method="POST" action="/orders/{{ $orderinfo ->OrderID}}/po"<input type="hidden" name="OrderID" value=$poinfo[$count]->OrderID>
+<input type="hidden" name="PONum" value=$podet->PONum>
+<div class=text-right>
+<button type="submit" class="btn btn-primary btn-xs">Edit</button>
+</div>
+</form>
+
+<table class="table table-condensed">
+<tr><th>Info</th><th>Billing</th><th>Shipping</th></tr>
+<tr><td><strong>Company Name</strong></td><td> FactoryExpress </td><td>'. $poinfo[$count] ->ShippingCompanyName.'</td></tr>
+<tr><td><strong>First Name</strong></td><td> David </td><td>'. $poinfo[$count] ->ShippingFirstName.'</td></tr>
+<tr><td><strong>Last Name</strong></td><td> Zimpleman </td><td>'. $poinfo[$count] ->ShippingLastName.'</td></tr>
+<tr><td><strong>Address1</strong></td><td> 3505 Constitution Ave </td><td>'. $poinfo[$count] ->ShippingAddress1.'</td></tr>
+<tr><td><strong>Address2</strong></td><td></td><td>'. $poinfo[$count] ->ShippingAddress2.'</td></tr>
+<tr><td><strong>City</strong></td><td> Albuquerque </td><td>'. $poinfo[$count] ->ShippingCity.'</td></tr>
+<tr><td><strong>State</strong></td><td> New Mexico </td><td>'. $poinfo[$count] ->ShippingState.'</td></tr>
+<tr><td><strong>PostalCode</strong></td><td> 87106 </td><td>'. $poinfo[$count] ->ShippingPostalCode.'</td></tr>
+<tr><td><strong>Country</strong></td><td> USA </td><td>'. $poinfo[$count] ->ShippingCountry.'</td></tr>
+<tr><td><b>Phone Number</b></td><td> 505-247-3232 </td><td>'. $poinfo[$count] ->ShippingPhoneNumber.'</td></tr>
+</table>
+<table class="table table-condensed">
+<tr><th>Quantity</th><th>Code</th><th>Description</th><th>Price</th><th>Options</th></tr>
+');
+					$count = $count +1;
+
+					}
+				@endphp
+
+<tr><td><strong>{{ $podet ->Quantity}}</td><td>{{ $podet ->ProductCode}}</td><td>{{ $podet ->ProductName}}</td><td>{{ $podet ->Cost}}</td><td>{{ $podet ->Options}}</strong></td>
+
+				@php
+					$lastpo = $podet->PONum;
+				@endphp
+
+			@endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
