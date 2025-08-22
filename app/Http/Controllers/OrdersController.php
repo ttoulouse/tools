@@ -192,7 +192,7 @@ class OrdersController extends Controller
 			 'ShippingPhoneNumber' => $orderinfo->ShippingPhoneNumber, 'ShippingMethod' => $orderinfo->ShippingMethod, 'Vendor' => $orderdet->VendorPick, 'PaymentMethod' => $orderinfo->PaymentMethod, 'CreatedDate'=>$dt->toDateString(),
 			 'createdby' => Auth::user()->name]);
 
-			 $comments= $orderinfo->OrderComments.'<br>Ship via Factory Express UPS Acct 8XX718. Please.<br>Put our PO# in your shipper ref #2 on UPS.<br>Notify us of all backorders!<br>Please email tracking info when shipped: <b>tracking@factory-express.com</b><br>Please email or fax Order Acknowledgement: <b>POconfirm@factory-express.com / 505-891-4641</b><br>';
+                        $comments= $orderinfo->OrderComments.'<br>Ship via Factory Express UPS Acct 68X564. Please.<br>Put our PO# in your shipper ref #2 on UPS.<br>Notify us of all backorders!<br>Please email tracking info when shipped: <b>tracking@factory-express.com</b><br>Please email or fax Order Acknowledgement: <b>POconfirm@factory-express.com / 505-891-4641</b><br>';
 			 $comments = $comments.$vendordb->first()->Comments;
 
 			if($orderdet->VendorPick=='Spiral Binding Co' || $orderdet->VendorPick=='SOUTHWEST PLASTIC BINDING' ||  $orderdet->VendorPick=='BankSupplies Inc.' ||  $orderdet->VendorPick=='Whitaker Brothers') {
