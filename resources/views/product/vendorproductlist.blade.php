@@ -10,10 +10,20 @@
                     <button type="submit" class="btn btn-primary btn-xs" name="button" style="float: right;" value="update">Save</button>
                     <button type="submit" class="btn btn-primary btn-xs" name="button" style="float: right;" value="active">Active</button>
                 </div>
-		<div class="panel-body">
+                <div class="panel-body">
                         <table class="table">
-                        <tr><th>Product Code</th><th>Vendor Product Code</th><th>Product Name</th><th>Cost</th><th>Price</th><th>MSRP</th><th>Last Updated</th></tr>
+                        <tr>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=ProductCode&direction={{ ($sort == 'ProductCode' && $direction == 'asc') ? 'desc' : 'asc' }}">Product Code</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=VendorProductCode&direction={{ ($sort == 'VendorProductCode' && $direction == 'asc') ? 'desc' : 'asc' }}">Vendor Product Code</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=ProductName&direction={{ ($sort == 'ProductName' && $direction == 'asc') ? 'desc' : 'asc' }}">Product Name</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=Cost&direction={{ ($sort == 'Cost' && $direction == 'asc') ? 'desc' : 'asc' }}">Cost</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=ProductPrice&direction={{ ($sort == 'ProductPrice' && $direction == 'asc') ? 'desc' : 'asc' }}">Price</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=msrp&direction={{ ($sort == 'msrp' && $direction == 'asc') ? 'desc' : 'asc' }}">MSRP</a></th>
+                            <th><a href="{{ url('/') }}/product/vendor/{{$vendor}}?sort=lastupdate&direction={{ ($sort == 'lastupdate' && $direction == 'asc') ? 'desc' : 'asc' }}">Last Updated</a></th>
+                        </tr>
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="sort" value="{{ $sort }}">
+                        <input type="hidden" name="direction" value="{{ $direction }}">
                         
                         @foreach ( $products as $product)
                             <input type="hidden" name="productcode[]" value="{{$product->ProductCode}}">
