@@ -40,17 +40,34 @@ class ProductController extends Controller
         return view('product.vendorlist', compact('vendors'));
     }
     
-    public function vendor($vendor)
+    public function vendor(Request $request, $vendor)
     {
+        $allowedSorts = ['ProductCode', 'VendorProductCode', 'ProductName', 'Cost', 'ProductPrice', 'msrp', 'lastupdate'];
+        $sort = $request->input('sort', 'ProductName');
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'ProductName';
+        }
+        $direction = $request->input('direction', 'asc');
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+
         $products = \DB::table('vendorrules')
             ->where('VendorName', $vendor)
-            ->orderBy('ProductName', 'asc')
+            ->orderBy($sort, $direction)
             ->get();
-        return view('product.vendorproductlist',compact('products','vendor'));
+
+        return view('product.vendorproductlist', compact('products', 'vendor', 'sort', 'direction'));
     }
 
     public function updatevendor(Request $request, $vendor)
     {
+
+        $allowedSorts = ['ProductCode', 'VendorProductCode', 'ProductName', 'Cost', 'ProductPrice', 'msrp', 'lastupdate'];
+        $sort = $request->input('sort', 'ProductName');
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'ProductName';
+        }
+        $direction = $request->input('direction', 'asc');
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
 
         $active=$request->input('button');
 
@@ -58,10 +75,10 @@ class ProductController extends Controller
                 $products = \DB::table('vendorrules')
                     ->where('VendorName', $vendor)
                     ->where('active','1')
-                    ->orderBy('ProductName', 'asc')
+                    ->orderBy($sort, $direction)
                     ->get();
 
-            return view('product.vendorproductlist',compact('products','vendor'));
+            return view('product.vendorproductlist',compact('products','vendor','sort','direction'));
         }
         for ($i = 0; $i < sizeof($request->input('productcode')); $i++) {
 
@@ -88,9 +105,9 @@ class ProductController extends Controller
 
         $products = \DB::table('vendorrules')
             ->where('VendorName', $vendor)
-            ->orderBy('ProductName', 'asc')
+            ->orderBy($sort, $direction)
             ->get();
-        return view('product.vendorproductlist',compact('products','vendor'));
+        return view('product.vendorproductlist',compact('products','vendor','sort','direction'));
     }
     
     public function bulkdiscontinue()
