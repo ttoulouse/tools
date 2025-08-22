@@ -32,14 +32,20 @@ class ProductController extends Controller
     {
 
 	    $searchterm = $request->input('VendorName');
-    	$vendors = \DB::table('vendors')->where('VendorName', 'like', '%'.$searchterm.'%')->get();
+        $vendors = \DB::table('vendors')
+            ->where('VendorName', 'like', '%'.$searchterm.'%')
+            ->orderBy('VendorName', 'asc')
+            ->get();
 
         return view('product.vendorlist', compact('vendors'));
     }
     
     public function vendor($vendor)
     {
-    	$products = \DB::table('vendorrules')->where('VendorName', $vendor)->get();
+        $products = \DB::table('vendorrules')
+            ->where('VendorName', $vendor)
+            ->orderBy('ProductName', 'asc')
+            ->get();
         return view('product.vendorproductlist',compact('products','vendor'));
     }
 
@@ -49,7 +55,11 @@ class ProductController extends Controller
         $active=$request->input('button');
 
         if($active == 'active') {
-        	$products = \DB::table('vendorrules')->where('VendorName', $vendor)->where('active','1')->get();
+                $products = \DB::table('vendorrules')
+                    ->where('VendorName', $vendor)
+                    ->where('active','1')
+                    ->orderBy('ProductName', 'asc')
+                    ->get();
 
             return view('product.vendorproductlist',compact('products','vendor'));
         }
@@ -76,7 +86,10 @@ class ProductController extends Controller
             }
         }
 
-    	$products = \DB::table('vendorrules')->where('VendorName', $vendor)->get();
+        $products = \DB::table('vendorrules')
+            ->where('VendorName', $vendor)
+            ->orderBy('ProductName', 'asc')
+            ->get();
         return view('product.vendorproductlist',compact('products','vendor'));
     }
     
