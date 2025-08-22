@@ -34,7 +34,7 @@ class ProductController extends Controller
 	    $searchterm = $request->input('VendorName');
     	$vendors = \DB::table('vendors')->where('VendorName', 'like', '%'.$searchterm.'%')->get();
 
-        return view('product.vendorlist',compact('vendors','active'));
+        return view('product.vendorlist', compact('vendors'));
     }
     
     public function vendor($vendor)
